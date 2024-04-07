@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="backup_quotes">
+        <item>"The only way to do great work is to love what you do." - Steve Jobs</item>
+        <item>"Believe you can and you're halfway there." - Theodore Roosevelt</item>
+        <item>"Success is not final, failure is not fatal: It is the courage to continue that counts." - Winston Churchill</item>
+        <!-- Add more backup quotes as needed -->
+    </string-array>
+</resources>

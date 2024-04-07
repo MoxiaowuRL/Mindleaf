@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="font_color_for_background_1">#FFFFFF</color> <!-- Example color for background 1 -->
+    <color name="font_color_for_background_2">#000000</color> <!-- Example color for background 2 -->
+    <color name="font_color_for_background_3">#F2C14E</color> <!-- Example color for background 3 -->
+    <color name="font_color_for_background_4">#CB4C3A</color> <!-- Example color for background 4 -->
+    <color name="font_color_for_background_5">#A1CAF1</color> <!-- Example color for background 5 -->
+    <color name="font_color_for_background_6">#5DADEC</color> <!-- Example color for background 6 -->
+    <color name="font_color_for_background_7">#93E9BE</color> <!-- Example color for background 7 -->
+    <color name="font_color_for_background_8">#769671</color> <!-- Example color for background 8 -->
+    <color name="font_color_for_background_9">#5A3E36</color> <!-- Example color for background 9 -->
+</resources>
