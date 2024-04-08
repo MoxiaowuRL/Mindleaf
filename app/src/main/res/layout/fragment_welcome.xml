@@ -23,16 +23,32 @@
         android:textSize="24sp" />
 
     <Button
-        android:id="@+id/getStartedButton"
+        android:id="@+id/signinButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Get Started"
-        android:textSize="18sp"
-        android:background="?android:attr/selectableItemBackground"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:text="Sign In"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/guestButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue as Guest"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
+<!--    <Button-->
+<!--        android:id="@+id/getStartedButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Get Started"-->
+<!--        android:textSize="18sp"-->
+<!--        android:background="?android:attr/selectableItemBackground"-->
+<!--        android:paddingLeft="48dp"-->
+<!--        android:paddingRight="48dp"-->
+<!--        android:paddingTop="12dp"-->
+<!--        android:paddingBottom="12dp"-->
+<!--        android:layout_marginBottom="16dp"/>-->
 
 </LinearLayout>

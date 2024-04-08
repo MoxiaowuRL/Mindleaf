@@ -1,5 +1,6 @@
 package com.example.mindleaf.api
 
+import com.example.mindleaf.data.Quote
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -8,14 +9,15 @@ interface QuoteApi {
     @GET("random")
     suspend fun getRandomQuote(): Quote
 
-    object QuoteApiService {
+    companion object{
         private const val BASE_URL = "https://api.quotable.io/"
 
-        private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val quoteApi: QuoteApi = retrofit.create(QuoteApi::class.java)
+        val instance:QuoteApi by lazy{
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            retrofit.create(QuoteApi::class.java)
+        }
     }
 }

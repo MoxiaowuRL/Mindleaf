@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "360647432583",
+    "project_id": "mindleaf-419617",
+    "storage_bucket": "mindleaf-419617.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:360647432583:android:1ecd992b3d298e9ce21b22",
+        "android_client_info": {
+          "package_name": "com.example.mindleaf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE0SkUf96FJWfWf6wKX1CJbzelnXqLzP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

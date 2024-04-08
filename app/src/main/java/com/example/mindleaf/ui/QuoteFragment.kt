@@ -5,18 +5,34 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.mindleaf.R
 import com.example.mindleaf.api.QuoteApi
+import com.example.mindleaf.data.FavoriteQuote
+import com.example.mindleaf.data.FavoriteQuotesRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Calendar
 
 class QuoteFragment : Fragment() {
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var userNameTextView: TextView
+    private lateinit var favoriteButton: ImageButton
+    private lateinit var quoteTextView: TextView
+    private var isFavorite = false
+    private lateinit var backgroundImageView: ImageView
+
     private val backgroundImages = listOf(
         R.drawable.background_1,
         R.drawable.background_2,
@@ -38,38 +54,77 @@ class QuoteFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_quote, container, false)
 
-        val quoteTextView: TextView = view.findViewById(R.id.quoteTextView)
-        val dayTextView: TextView = view.findViewById(R.id.dayTextView)
-        val dateTextView: TextView = view.findViewById(R.id.dateTextView)
+        auth = FirebaseAuth.getInstance()
+        userNameTextView = view.findViewById(R.id.userNameTextView)
+        favoriteButton = view.findViewById(R.id.favoriteButton)
+        quoteTextView = view.findViewById(R.id.quoteTextView)
+
+        // Display the user's name if signed in
+        val currentUser = auth.currentUser
+        userNameTextView.text = currentUser?.displayName ?: "Guest"
+
+        backgroundImageView = view.findViewById(/* id = */ R.id.backgroundImageView)
 
         // Fetch a random quote from the API
         lifecycleScope.launch {
-            try {
-                val quote = QuoteApi.QuoteApiService.quoteApi.getRandomQuote()
-                quoteTextView.text = quote.content
+                val quote = fetchQuote()
+                quoteTextView.text = quote
+                // Check if the quote is a favorite and update the button state accordingly
+                isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quote)
+                updateFavoriteButtonState()
+            }
+            // Set random background image and corresponding font color
+        val randomIndex = (0 until backgroundImages.size).random()
+        backgroundImageView.setImageResource(backgroundImages[randomIndex])
+        quoteTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
 
-                // Set random background image and corresponding font color
-                val randomIndex = (0 until backgroundImages.size).random()
-                view.setBackgroundResource(backgroundImages[randomIndex])
-                quoteTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
-                dayTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
-                dateTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
-            } catch (e: Exception) {
-                // Handle any errors that occur during the API request
-                val backupQuotes = resources.getStringArray(R.array.backup_quotes)
-                val randomBackupQuote = backupQuotes.random()
-                quoteTextView.text = randomBackupQuote
+        favoriteButton.setOnClickListener {
+            if (currentUser != null) {
+                // User is signed in, save the quote as a favorite
+                toggleFavoriteStatus(quoteTextView.text.toString())
+            } else {
+                // Guest user, show a message to sign up first
+                showSignUpMessage()
             }
         }
 
-        val calendar = Calendar.getInstance()
-        val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault())
-        val dateFormat = SimpleDateFormat("MMMM d", Locale.getDefault())
-        val currentDay = dayFormat.format(calendar.time)
-        val currentDate = dateFormat.format(calendar.time)
-        dayTextView.text = currentDay
-        dateTextView.text = currentDate
+        val favoriteListButton: ImageButton = view.findViewById(R.id.favoriteListButton)
+        favoriteListButton.setOnClickListener {
+            findNavController().navigate(R.id.action_quoteFragment_to_favoriteFragment)
+        }
 
         return view
+    }
+
+    private suspend fun fetchQuote(): String {
+        return try {
+            val quote = QuoteApi.instance.getRandomQuote()
+            quote.content
+        } catch (e: Exception) {
+            val backupQuotes = resources.getStringArray(R.array.backup_quotes)
+            backupQuotes.random()
+        }
+    }
+
+    private fun toggleFavoriteStatus(currentQuote: String) {
+        isFavorite = FavoriteQuotesRepository.isFavoriteQuote(currentQuote)
+        if (isFavorite) {
+            FavoriteQuotesRepository.removeFavoriteQuote(FavoriteQuote(currentQuote))
+            Toast.makeText(requireContext(), "Removed from favorites", Toast.LENGTH_SHORT).show()
+        } else {
+            FavoriteQuotesRepository.addFavoriteQuote(currentQuote)
+            Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
+        }
+        isFavorite = !isFavorite // Update the favorite status
+        updateFavoriteButtonState() // Update the favorite button state
+    }
+    private fun updateFavoriteButtonState() {
+        val favoriteIcon = if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp
+        favoriteButton.setImageResource(favoriteIcon)
+    }
+
+    private fun showSignUpMessage() {
+        // Show a message to the guest user to sign up first
+        Toast.makeText(requireContext(), "Please sign in to save favorites", Toast.LENGTH_SHORT).show()
     }
 }
