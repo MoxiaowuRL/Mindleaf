@@ -1,7 +1,6 @@
 package com.example.mindleaf.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,6 @@ import com.example.mindleaf.data.FavoriteQuote
 import com.example.mindleaf.data.FavoriteQuotesRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.Calendar
 
 class QuoteFragment : Fragment() {
 
@@ -40,7 +36,7 @@ class QuoteFragment : Fragment() {
         R.drawable.background_4,
         R.drawable.background_5,
         R.drawable.background_6,
-        R.drawable.background_7,
+        R.drawable.background_7
     )
     private val fontColors = listOf(
         R.color.font_color_for_background_1,
@@ -49,8 +45,9 @@ class QuoteFragment : Fragment() {
         R.color.font_color_for_background_4,
         R.color.font_color_for_background_5,
         R.color.font_color_for_background_6,
-        R.color.font_color_for_background_7,
-        )
+        R.color.font_color_for_background_7
+    )
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_quote, container, false)
 
@@ -58,22 +55,26 @@ class QuoteFragment : Fragment() {
         userNameTextView = view.findViewById(R.id.userNameTextView)
         favoriteButton = view.findViewById(R.id.favoriteButton)
         quoteTextView = view.findViewById(R.id.quoteTextView)
+        backgroundImageView = view.findViewById(R.id.backgroundImageView)
 
         // Display the user's name if signed in
         val currentUser = auth.currentUser
-        userNameTextView.text = currentUser?.displayName ?: "Guest"
-
-        backgroundImageView = view.findViewById(/* id = */ R.id.backgroundImageView)
+        if (currentUser != null) {
+            userNameTextView.text = currentUser.displayName
+        } else {
+            userNameTextView.text = "Guest"
+        }
 
         // Fetch a random quote from the API
         lifecycleScope.launch {
-                val quote = fetchQuote()
-                quoteTextView.text = quote
-                // Check if the quote is a favorite and update the button state accordingly
-                isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quote)
-                updateFavoriteButtonState()
-            }
-            // Set random background image and corresponding font color
+            val quote = fetchQuote()
+            quoteTextView.text = quote
+            // Check if the quote is a favorite and update the button state accordingly
+            isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quote)
+            updateFavoriteButtonState()
+        }
+
+        // Set random background image and corresponding font color
         val randomIndex = (0 until backgroundImages.size).random()
         backgroundImageView.setImageResource(backgroundImages[randomIndex])
         quoteTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
@@ -88,7 +89,7 @@ class QuoteFragment : Fragment() {
             }
         }
 
-        val favoriteListButton: ImageButton = view.findViewById(R.id.favoriteListButton)
+        val favoriteListButton: Button = view.findViewById(R.id.favoriteListButton)
         favoriteListButton.setOnClickListener {
             findNavController().navigate(R.id.action_quoteFragment_to_favoriteFragment)
         }
@@ -118,6 +119,7 @@ class QuoteFragment : Fragment() {
         isFavorite = !isFavorite // Update the favorite status
         updateFavoriteButtonState() // Update the favorite button state
     }
+
     private fun updateFavoriteButtonState() {
         val favoriteIcon = if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp
         favoriteButton.setImageResource(favoriteIcon)
