@@ -1,6 +1,7 @@
 package com.example.mindleaf.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.mindleaf.R
 import com.example.mindleaf.api.QuoteApi
-import com.example.mindleaf.data.FavoriteQuote
 import com.example.mindleaf.data.FavoriteQuotesRepository
+import com.example.mindleaf.data.Quote
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -26,6 +27,7 @@ class QuoteFragment : Fragment() {
     private lateinit var userNameTextView: TextView
     private lateinit var favoriteButton: ImageButton
     private lateinit var quoteTextView: TextView
+    private lateinit var authorTextView: TextView
     private var isFavorite = false
     private lateinit var backgroundImageView: ImageView
 
@@ -55,34 +57,22 @@ class QuoteFragment : Fragment() {
         userNameTextView = view.findViewById(R.id.userNameTextView)
         favoriteButton = view.findViewById(R.id.favoriteButton)
         quoteTextView = view.findViewById(R.id.quoteTextView)
+        authorTextView = view.findViewById(R.id.authorTextView)
         backgroundImageView = view.findViewById(R.id.backgroundImageView)
 
         // Display the user's name if signed in
         val currentUser = auth.currentUser
         if (currentUser != null) {
             userNameTextView.text = currentUser.displayName
+            userNameTextView.visibility = View.VISIBLE
         } else {
-            userNameTextView.text = "Guest"
+            userNameTextView.visibility = View.GONE
         }
-
-        // Fetch a random quote from the API
-        lifecycleScope.launch {
-            val quote = fetchQuote()
-            quoteTextView.text = quote
-            // Check if the quote is a favorite and update the button state accordingly
-            isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quote)
-            updateFavoriteButtonState()
-        }
-
-        // Set random background image and corresponding font color
-        val randomIndex = (0 until backgroundImages.size).random()
-        backgroundImageView.setImageResource(backgroundImages[randomIndex])
-        quoteTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
-
+        refreshQuote()
         favoriteButton.setOnClickListener {
             if (currentUser != null) {
-                // User is signed in, save the quote as a favorite
-                toggleFavoriteStatus(quoteTextView.text.toString())
+                // User is signed in, toggle the favorite status
+                toggleFavoriteStatus(Quote(quoteTextView.text.toString(), authorTextView.text.toString()))
             } else {
                 // Guest user, show a message to sign up first
                 showSignUpMessage()
@@ -91,29 +81,55 @@ class QuoteFragment : Fragment() {
 
         val favoriteListButton: Button = view.findViewById(R.id.favoriteListButton)
         favoriteListButton.setOnClickListener {
-            findNavController().navigate(R.id.action_quoteFragment_to_favoriteFragment)
+            try{
+                findNavController().navigate(R.id.action_quoteFragment_to_favoriteFragment)
+            } catch(e:Exception){
+                Log.e("QuoteFragment", "Failed to navigate to Favorite Fragment", e);
+            }
+        }
+
+        view.setOnClickListener {
+            refreshQuote()
         }
 
         return view
     }
 
-    private suspend fun fetchQuote(): String {
+    private fun refreshQuote() {
+        lifecycleScope.launch {
+            val quote = fetchQuote()
+            quoteTextView.text = quote.content
+            authorTextView.text = quote.author
+
+            // Check if the quote is a favorite and update the button state accordingly
+            isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quote.content)
+            updateFavoriteButtonState()
+
+            // Set random background image and corresponding font color
+            val randomIndex = (0 until backgroundImages.size).random()
+            backgroundImageView.setImageResource(backgroundImages[randomIndex])
+            quoteTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
+            authorTextView.setTextColor(ContextCompat.getColor(requireContext(), fontColors[randomIndex]))
+        }
+    }
+    private suspend fun fetchQuote(): Quote {
         return try {
-            val quote = QuoteApi.instance.getRandomQuote()
-            quote.content
+            QuoteApi.instance.getRandomQuote()
         } catch (e: Exception) {
             val backupQuotes = resources.getStringArray(R.array.backup_quotes)
-            backupQuotes.random()
+            val randomQuote = backupQuotes.random()
+            Quote(randomQuote, "Unknown")
         }
     }
 
-    private fun toggleFavoriteStatus(currentQuote: String) {
-        isFavorite = FavoriteQuotesRepository.isFavoriteQuote(currentQuote)
+    private fun toggleFavoriteStatus(quote: Quote) {
+        val quoteContent = quote.content
+        isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quoteContent)
         if (isFavorite) {
-            FavoriteQuotesRepository.removeFavoriteQuote(FavoriteQuote(currentQuote))
+            FavoriteQuotesRepository.removeFavoriteQuote(quoteContent)
             Toast.makeText(requireContext(), "Removed from favorites", Toast.LENGTH_SHORT).show()
         } else {
-            FavoriteQuotesRepository.addFavoriteQuote(currentQuote)
+            FavoriteQuotesRepository.addFavoriteQuote(quoteContent)
             Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
         }
         isFavorite = !isFavorite // Update the favorite status

@@ -25,6 +25,9 @@
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.mindleaf.ui.FavoriteFragment"
-        android:label="Favorites" />
-
+        android:label="Favorites">
+        <action
+            android:id="@+id/action_favoriteFragment_to_quoteFragment"
+            app:destination="@id/quoteFragment" />
+    </fragment>
 </navigation>

@@ -74,6 +74,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation ("com.firebaseui:firebase-ui-auth:8.0.2")
+    implementation("com.google.ai.client.generativeai:generativeai:0.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
