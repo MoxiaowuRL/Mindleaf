@@ -61,6 +61,7 @@ class WelcomeFragment : Fragment() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
+            findNavController().navigate(R.id.action_welcomeFragment_to_quoteFragment)
         } else {
             // Sign in failed
             if (result.idpResponse == null) {

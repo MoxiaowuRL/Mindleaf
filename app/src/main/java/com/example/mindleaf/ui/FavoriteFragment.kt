@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,6 +22,7 @@ class FavoriteFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var userNameTextView: TextView
     private lateinit var logoImageView: ImageView
+    private lateinit var loginButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +34,8 @@ class FavoriteFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         userNameTextView = view.findViewById(R.id.userNameTextView)
         logoImageView = view.findViewById(R.id.logoImageView)
-
+        loginButton = view.findViewById(R.id.loginButton)
+        loginButton.visibility = View.GONE
         // Display the user's name if signed in
         val currentUser = auth.currentUser
         if (currentUser != null) {
@@ -54,18 +57,22 @@ class FavoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val favoriteQuotes = FavoriteQuotesRepository.favoriteQuotes
-        val adapter = FavoriteQuotesAdapter(favoriteQuotes) { favoriteQuote ->
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid ?: ""
+
+
+        val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
+        val adapter = FavoriteQuotesAdapter(favoriteQuotes.toMutableList()) { favoriteQuote ->
             // Handle item click
-            FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote)
-            updateFavoriteQuotesList()
+            FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote, userId)
+            updateFavoriteQuotesList(userId)
         }
         favoriteRecyclerView.adapter = adapter
         favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun updateFavoriteQuotesList() {
-        val favoriteQuotes = FavoriteQuotesRepository.favoriteQuotes
+    private fun updateFavoriteQuotesList(userId: String) {
+        val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
         (favoriteRecyclerView.adapter as FavoriteQuotesAdapter).updateFavoriteQuotes(favoriteQuotes)
     }
 }

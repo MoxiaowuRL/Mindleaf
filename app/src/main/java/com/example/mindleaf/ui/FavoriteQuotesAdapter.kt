@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mindleaf.R
 
 class FavoriteQuotesAdapter(
-    private var favoriteQuotes: List<String>,
+    private var favoriteQuotes: MutableList<String>,
     private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<FavoriteQuotesAdapter.ViewHolder>() {
 
@@ -26,9 +26,16 @@ class FavoriteQuotesAdapter(
     override fun getItemCount(): Int {
         return favoriteQuotes.size
     }
-
+    fun removeFavoriteQuote(quote: String) {
+        val position = favoriteQuotes.indexOf(quote)
+        if (position != -1) {
+            favoriteQuotes.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
     fun updateFavoriteQuotes(favoriteQuotes: List<String>) {
-        this.favoriteQuotes = favoriteQuotes
+        this.favoriteQuotes.clear()
+        this.favoriteQuotes.addAll(favoriteQuotes)
         notifyDataSetChanged()
     }
 
@@ -42,6 +49,7 @@ class FavoriteQuotesAdapter(
                 if (position != RecyclerView.NO_POSITION) {
                     val favoriteQuote = favoriteQuotes[position]
                     onItemClick(favoriteQuote)
+                    removeFavoriteQuote(favoriteQuote)
                 }
             }
         }
