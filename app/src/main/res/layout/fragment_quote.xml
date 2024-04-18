@@ -7,6 +7,8 @@
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_layout" />
+    <!-- Puppy ImageView Placeholder -->
+
     <ImageView
         android:id="@+id/backgroundImageView"
         android:layout_width="match_parent"
@@ -14,6 +16,14 @@
         android:scaleType="centerCrop"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <ImageView
+        android:id="@+id/puppyImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/quoteTextView"
+        app:srcCompat="@drawable/ic_puppy_placeholder" /> <!-- Placeholder drawable -->
     <TextView
         android:id="@+id/quoteTextView"
         android:layout_width="match_parent"
