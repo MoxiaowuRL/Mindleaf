@@ -42,15 +42,14 @@ class WelcomeFragment : Fragment() {
 
         guestButton.setOnClickListener {
             // Navigate to the quote fragment as a guest
-            findNavController().navigate(R.id.action_welcomeFragment_to_quoteFragment)
+            findNavController().navigate(R.id.quoteFragment)
         }
 
         authStateListener = FirebaseAuth.AuthStateListener { auth ->
             val user = auth.currentUser
             if (user != null) {
                 // User is signed in, navigate to QuoteFragment
-                findNavController().navigate(R.id.action_welcomeFragment_to_quoteFragment)
-            }
+                findNavController().navigate(R.id.quoteFragment)            }
         }
         FirebaseAuth.getInstance().addAuthStateListener(authStateListener)
 
@@ -61,7 +60,7 @@ class WelcomeFragment : Fragment() {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            findNavController().navigate(R.id.action_welcomeFragment_to_quoteFragment)
+            findNavController().navigate(R.id.quoteFragment)
         } else {
             // Sign in failed
             if (result.idpResponse == null) {

@@ -1,38 +1,20 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar_layout" />
-    <!-- Puppy ImageView Placeholder -->
-
-    <ImageView
-        android:id="@+id/backgroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent" />
-    <ImageView
-        android:id="@+id/puppyImageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toTopOf="@id/quoteTextView"
-        app:srcCompat="@drawable/ic_puppy_placeholder" /> <!-- Placeholder drawable -->
     <TextView
         android:id="@+id/quoteTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="32sp"
+        android:padding="16dp"
         android:textAlignment="center"
-        android:padding="12dp"
-        app:layout_constraintTop_toTopOf="@id/backgroundImageView"
-        app:layout_constraintBottom_toBottomOf="@id/backgroundImageView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="NotSibling"/>
 
     <TextView
         android:id="@+id/authorTextView"
@@ -57,12 +39,5 @@
         app:layout_constraintTop_toBottomOf="@id/authorTextView"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/dailyTipTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/favoriteButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

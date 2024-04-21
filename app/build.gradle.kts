@@ -79,6 +79,9 @@ dependencies {
 
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.android.engage:engage-core:1.4.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
+    implementation("com.android.support:support-annotations:28.0.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
 
     testImplementation(libs.junit)

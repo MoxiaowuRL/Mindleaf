@@ -2,18 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/quoteTextView"
+        android:id="@+id/favoriteQuoteContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/removeFavoriteButton" />
+        app:layout_constraintEnd_toStartOf="@id/removeFavoriteButton"
+        tools:text="Quote content" />
+
+    <TextView
+        android:id="@+id/favoriteQuoteAuthor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/favoriteQuoteContent"
+        app:layout_constraintEnd_toStartOf="@id/removeFavoriteButton"
+        tools:text="Author" />
 
     <ImageButton
         android:id="@+id/removeFavoriteButton"

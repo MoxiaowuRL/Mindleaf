@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/quoteFragment"
+        android:title="Quotes" />
+    <item
+        android:id="@+id/cutiesFragment"
+        android:title="Cuties" />
+    <item
+        android:id="@+id/postQuoteFragment"
+        android:icon="@drawable/ic_new_post" />
+    <item
+        android:id="@+id/topQuotesFragment"
+        android:title="Top Quotes"/>
+    <item
+        android:id="@+id/favoriteFragment"
+        android:title="Favorites" />
+</menu>
