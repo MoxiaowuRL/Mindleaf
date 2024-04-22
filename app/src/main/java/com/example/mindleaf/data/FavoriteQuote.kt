@@ -16,6 +16,7 @@ object FavoriteQuotesRepository {
         val db = databaseHelper.writableDatabase
         val values = ContentValues().apply {
             put(DatabaseHelper.COLUMN_FAVORITE_QUOTE, quote.content)
+            put(DatabaseHelper.COLUMN_FAVORITE_AUTHOR, quote.author)
             put(DatabaseHelper.COLUMN_USER_ID, userId)
             put(DatabaseHelper.COLUMN_LIKES_COUNT, quote.likesCount)
         }
@@ -29,12 +30,12 @@ object FavoriteQuotesRepository {
         db.execSQL(updateLikes, arrayOf(quote))
     }
 
-    fun removeFavoriteQuote(quote: String, userId: String) {
+    fun removeFavoriteQuote(quote: String,author: String, userId: String) {
         val db = databaseHelper.writableDatabase
         db.delete(
             DatabaseHelper.FAVORITE_QUOTES_TABLE_NAME,
-            "${DatabaseHelper.COLUMN_FAVORITE_QUOTE} = ? AND ${DatabaseHelper.COLUMN_USER_ID} = ?",
-            arrayOf(quote, userId)
+            "${DatabaseHelper.COLUMN_FAVORITE_QUOTE} = ? AND ${DatabaseHelper.COLUMN_FAVORITE_AUTHOR} = ? AND ${DatabaseHelper.COLUMN_USER_ID} = ?",
+            arrayOf(quote, author, userId)
         )
         db.close()
     }
@@ -47,6 +48,7 @@ object FavoriteQuotesRepository {
             DatabaseHelper.FAVORITE_QUOTES_TABLE_NAME,
             arrayOf(
                 DatabaseHelper.COLUMN_FAVORITE_QUOTE,
+                DatabaseHelper.COLUMN_FAVORITE_AUTHOR,
                 "MAX(${DatabaseHelper.COLUMN_LIKES_COUNT}) AS ${DatabaseHelper.COLUMN_LIKES_COUNT}"
             ),
             null,
@@ -59,8 +61,9 @@ object FavoriteQuotesRepository {
         cursor?.let {
             while (it.moveToNext()) {
                 val content = it.getString(it.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE_QUOTE))
+                val author = it.getString(it.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE_AUTHOR))
                 val likesCount = it.getInt(it.getColumnIndex(DatabaseHelper.COLUMN_LIKES_COUNT))
-                topQuotes.add(Quote(content, "Unknown", likesCount))
+                topQuotes.add(Quote(content, author, likesCount))
             }
             it.close()
         }
@@ -74,7 +77,7 @@ object FavoriteQuotesRepository {
         val db = databaseHelper.readableDatabase
         val cursor = db.query(
             DatabaseHelper.FAVORITE_QUOTES_TABLE_NAME,
-            arrayOf(DatabaseHelper.COLUMN_FAVORITE_QUOTE, DatabaseHelper.COLUMN_LIKES_COUNT),
+            arrayOf(DatabaseHelper.COLUMN_FAVORITE_QUOTE, DatabaseHelper.COLUMN_FAVORITE_AUTHOR, DatabaseHelper.COLUMN_LIKES_COUNT),
             "${DatabaseHelper.COLUMN_USER_ID} = ?",
             arrayOf(userId),
             null,
@@ -84,8 +87,9 @@ object FavoriteQuotesRepository {
         cursor?.let {
             while (it.moveToNext()) {
                 val content = it.getString(it.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE_QUOTE))
+                val author = it.getString(it.getColumnIndex(DatabaseHelper.COLUMN_FAVORITE_AUTHOR))
                 val likesCount = it.getInt(it.getColumnIndex(DatabaseHelper.COLUMN_LIKES_COUNT))
-                favoriteQuotes.add(Quote(content, "Unknown", likesCount))
+                favoriteQuotes.add(Quote(content, author, likesCount))
             }
             it.close()
         }

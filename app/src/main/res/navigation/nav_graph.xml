@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/welcomeFragment">
-
+    <action
+        android:id="@+id/action_global_postQuoteFragment"
+        app:destination="@id/postQuoteFragment" />
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.example.mindleaf.ui.WelcomeFragment"
@@ -25,14 +27,15 @@
     <fragment
         android:id="@+id/postQuoteFragment"
         android:name="com.example.mindleaf.ui.PostQuoteFragment"
-        android:label="Post Quote"
-        tools:layout="@layout/fragment_post_quote" />
+        android:label="Post"
+        tools:layout="@layout/fragment_post_quote">
+    </fragment>
 
     <fragment
         android:id="@+id/topQuotesFragment"
         android:name="com.example.mindleaf.ui.TopQuotesFragment"
         android:label="TopQuotes"
-        tools:layout="@layout/fragment_top_quotes" />
+        tools:layout="@layout/fragment_top_quotes"/>
 
     <fragment
         android:id="@+id/favoriteFragment"

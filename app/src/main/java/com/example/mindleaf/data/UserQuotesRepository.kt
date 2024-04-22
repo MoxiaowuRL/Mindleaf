@@ -22,12 +22,13 @@ class UserQuotesRepository private constructor(context: Context) {
         }
     }
 
-    fun addUserQuote(quote: Quote) {
+    fun addUserQuote(quote: Quote): Boolean {
         val values = ContentValues().apply {
             put(DatabaseHelper.COLUMN_USER_QUOTE, quote.content)
             put(DatabaseHelper.COLUMN_USER_AUTHOR, quote.author)
         }
-        database.insert(DatabaseHelper.USER_QUOTES_TABLE_NAME, null, values)
+        val id = database.insert(DatabaseHelper.USER_QUOTES_TABLE_NAME, null, values)
+        return id != -1L
     }
 
     @SuppressLint("Range")

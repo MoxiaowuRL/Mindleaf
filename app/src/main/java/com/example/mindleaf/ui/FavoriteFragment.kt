@@ -16,7 +16,11 @@ class FavoriteFragment : Fragment() {
 
     private lateinit var favoriteRecyclerView: RecyclerView
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var adapter: FavoriteQuotesAdapter
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FavoriteQuotesRepository.initialize(requireContext())
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,20 +37,31 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val currentUser = auth.currentUser
-        val userId = currentUser?.uid ?: ""
-        lateinit var adapter: FavoriteQuotesAdapter
-        val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
-        adapter = FavoriteQuotesAdapter(favoriteQuotes.toMutableList()) { favoriteQuote ->
-            FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote.content, userId)
-            adapter.removeFavoriteQuote(favoriteQuote)
-            updateFavoriteQuotesList(userId)
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
+            adapter = FavoriteQuotesAdapter(favoriteQuotes.toMutableList()) { favoriteQuote ->
+                FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote.content, favoriteQuote.author,userId)
+                adapter.removeFavoriteQuote(favoriteQuote)
+                updateFavoriteQuotesList(userId)
+            }
+        } else {
+            adapter = FavoriteQuotesAdapter(mutableListOf()) { }
         }
         favoriteRecyclerView.adapter = adapter
         favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
-
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+        if (userId != null) {
+            updateFavoriteQuotesList(userId)
+        }
+    }
     private fun updateFavoriteQuotesList(userId: String) {
         val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
-        (favoriteRecyclerView.adapter as FavoriteQuotesAdapter).updateFavoriteQuotes(favoriteQuotes)
+        adapter.updateFavoriteQuotes(favoriteQuotes)
     }
 }

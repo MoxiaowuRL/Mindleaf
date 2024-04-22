@@ -6,9 +6,11 @@
     <item
         android:id="@+id/cutiesFragment"
         android:title="Cuties" />
+
     <item
         android:id="@+id/postQuoteFragment"
-        android:icon="@drawable/ic_new_post" />
+        android:title="Post" />
+
     <item
         android:id="@+id/topQuotesFragment"
         android:title="Top Quotes"/>

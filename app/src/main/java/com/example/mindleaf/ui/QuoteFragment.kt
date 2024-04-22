@@ -115,7 +115,7 @@ class QuoteFragment : Fragment() {
         val quoteContent = quote.content
         isFavorite = FavoriteQuotesRepository.isFavoriteQuote(quoteContent, userId)
         if (isFavorite) {
-            FavoriteQuotesRepository.removeFavoriteQuote(quoteContent, userId)
+            FavoriteQuotesRepository.removeFavoriteQuote(quoteContent, quote.author, userId)
             Toast.makeText(requireContext(), "Removed from favorites", Toast.LENGTH_SHORT).show()
         } else {
             FavoriteQuotesRepository.addFavoriteQuote(quote, userId)

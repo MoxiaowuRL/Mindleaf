@@ -2,6 +2,7 @@ package com.example.mindleaf
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -9,12 +10,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.FirebaseUiException
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.auth.User
@@ -28,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signOutButton: Button
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var fabPostQuote: FloatingActionButton
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -39,10 +45,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+//        navController = findNavController(R.id.nav_host_fragment)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
 
         // Inflate the toolbar layout and set it as the action bar
@@ -72,25 +79,30 @@ class MainActivity : AppCompatActivity() {
             val signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
+                .setIsSmartLockEnabled(false)
                 .build()
             signInLauncher.launch(signInIntent)
         }
 
-        signOutButton.setOnClickListener {
-            signOut()
-        }
         auth.addAuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             updateUI(user)
         }
+        signOutButton.setOnClickListener {
+            signOut()
+        }
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateUI(auth.currentUser)
         }
+        fabPostQuote = findViewById(R.id.fab_post_quote)
+        fabPostQuote.setOnClickListener {
+            navController.navigate(R.id.action_global_postQuoteFragment)        }
     }
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             // User is signed in
             userNameTextView.text = user.displayName
+            Log.d("MainActivity", "User displayName: ${user.displayName}")
             userNameTextView.visibility = View.VISIBLE
             signOutButton.visibility = View.VISIBLE
             loginButton.visibility = View.GONE
@@ -104,9 +116,15 @@ class MainActivity : AppCompatActivity() {
         if (currentDestination?.id == R.id.welcomeFragment) {
             toolbar.visibility = View.GONE
             bottomNavigationView.visibility = View.GONE
+            if (::fabPostQuote.isInitialized) {
+                fabPostQuote.visibility = View.GONE
+            }
         } else {
             toolbar.visibility = View.VISIBLE
             bottomNavigationView.visibility = View.VISIBLE
+            if (::fabPostQuote.isInitialized) {
+                fabPostQuote.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -119,21 +137,43 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.welcomeFragment)
     }
     private fun signOut() {
-        FirebaseAuth.getInstance().signOut()
-        userNameTextView.visibility = View.GONE
-        signOutButton.visibility = View.GONE
-        loginButton.visibility = View.VISIBLE
+        AuthUI.getInstance().signOut(this)
+            .addOnCompleteListener {
+                // User is now signed out
+                userNameTextView.visibility = View.GONE
+                signOutButton.visibility = View.GONE
+                loginButton.visibility = View.VISIBLE
+
+                // Navigate to the WelcomeFragment
+                navigateToWelcomeFragment()
+
+                Toast.makeText(this, "Signed out successfully", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         if (result.resultCode == Activity.RESULT_OK) {
             val user = FirebaseAuth.getInstance().currentUser
-            userNameTextView.text = user?.displayName
-            userNameTextView.visibility = View.VISIBLE
-            signOutButton.visibility = View.VISIBLE
-            loginButton.visibility = View.GONE
+            // Handle successful sign-in
         } else {
-            Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show()
+            val response = result.idpResponse
+            if (response == null) {
+                // User pressed the back button
+                Toast.makeText(this, "Sign-in cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                val error = response.error
+                if (error is FirebaseUiException) {
+                    if (error.errorCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                        // Handle merge conflict error
+                    } else {
+                        // Handle other FirebaseUiException errors
+                        Toast.makeText(this, "Sign-in error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Handle other errors
+                    Toast.makeText(this, "Sign-in error", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
