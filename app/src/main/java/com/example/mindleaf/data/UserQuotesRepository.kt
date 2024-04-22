@@ -33,6 +33,7 @@ class UserQuotesRepository private constructor(context: Context) {
 
     @SuppressLint("Range")
     fun getRandomUserQuote(): Quote? {
+        var quote: Quote? = null
         val cursor = database.query(
             DatabaseHelper.USER_QUOTES_TABLE_NAME,
             null,
@@ -43,12 +44,13 @@ class UserQuotesRepository private constructor(context: Context) {
             "RANDOM()",
             "1"
         )
-        return if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             val content = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_QUOTE))
             val author = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_AUTHOR))
-            Quote(content, author)
-        } else {
-            null
+            quote = Quote(content, author)
         }
+        cursor.close()
+        return quote
+
     }
 }

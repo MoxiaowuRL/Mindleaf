@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.firebase.ui.auth.AuthUI
@@ -22,7 +21,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.auth.User
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var signOutButton: Button
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var fabPostQuote: FloatingActionButton
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
@@ -94,9 +91,6 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             updateUI(auth.currentUser)
         }
-        fabPostQuote = findViewById(R.id.fab_post_quote)
-        fabPostQuote.setOnClickListener {
-            navController.navigate(R.id.action_global_postQuoteFragment)        }
     }
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
@@ -116,25 +110,17 @@ class MainActivity : AppCompatActivity() {
         if (currentDestination?.id == R.id.welcomeFragment) {
             toolbar.visibility = View.GONE
             bottomNavigationView.visibility = View.GONE
-            if (::fabPostQuote.isInitialized) {
-                fabPostQuote.visibility = View.GONE
-            }
         } else {
             toolbar.visibility = View.VISIBLE
             bottomNavigationView.visibility = View.VISIBLE
-            if (::fabPostQuote.isInitialized) {
-                fabPostQuote.visibility = View.VISIBLE
-            }
         }
-    }
-
-    private fun navigateToQuoteFragment() {
-        navController.navigate(R.id.quoteFragment)
-
     }
 
     private fun navigateToWelcomeFragment() {
         navController.navigate(R.id.welcomeFragment)
+    }
+    private fun navigateToQuoteFragment() {
+        navController.navigate(R.id.quoteFragment)
     }
     private fun signOut() {
         AuthUI.getInstance().signOut(this)

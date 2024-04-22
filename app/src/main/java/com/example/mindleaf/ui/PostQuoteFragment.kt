@@ -13,7 +13,6 @@ import com.example.mindleaf.R
 import com.example.mindleaf.data.Quote
 import com.example.mindleaf.data.UserQuotesRepository
 import com.google.firebase.auth.FirebaseAuth
-import io.grpc.Context
 
 class PostQuoteFragment : Fragment() {
 

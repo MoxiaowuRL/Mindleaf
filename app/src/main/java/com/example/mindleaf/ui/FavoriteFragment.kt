@@ -39,15 +39,15 @@ class FavoriteFragment : Fragment() {
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
 
-        if (userId != null) {
+        adapter = if (userId != null) {
             val favoriteQuotes = FavoriteQuotesRepository.getFavoriteQuotes(userId)
-            adapter = FavoriteQuotesAdapter(favoriteQuotes.toMutableList()) { favoriteQuote ->
-                FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote.content, favoriteQuote.author,userId)
+            FavoriteQuotesAdapter(favoriteQuotes.toMutableList()) { favoriteQuote ->
+                FavoriteQuotesRepository.removeFavoriteQuote(favoriteQuote.content, favoriteQuote.author, userId)
                 adapter.removeFavoriteQuote(favoriteQuote)
                 updateFavoriteQuotesList(userId)
             }
         } else {
-            adapter = FavoriteQuotesAdapter(mutableListOf()) { }
+            FavoriteQuotesAdapter(mutableListOf()) { }
         }
         favoriteRecyclerView.adapter = adapter
         favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())

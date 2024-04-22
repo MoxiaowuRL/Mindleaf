@@ -1,34 +1,20 @@
 package com.example.mindleaf.ui
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 
 import com.example.mindleaf.R
 import com.example.mindleaf.api.QuoteApi
 import com.example.mindleaf.data.FavoriteQuotesRepository
 import com.example.mindleaf.data.Quote
 import com.example.mindleaf.data.UserQuotesRepository
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -36,7 +22,6 @@ import kotlin.random.Random
 class QuoteFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var userNameTextView: TextView
     private lateinit var favoriteButton: ImageButton
     private lateinit var quoteTextView: TextView
     private lateinit var authorTextView: TextView

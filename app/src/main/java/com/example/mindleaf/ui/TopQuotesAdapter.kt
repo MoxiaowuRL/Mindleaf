@@ -12,7 +12,7 @@ class TopQuotesAdapter(private val quotes: List<Quote>) :
     RecyclerView.Adapter<TopQuotesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_quote, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_top_quote, parent, false)
         return ViewHolder(view)
     }
 

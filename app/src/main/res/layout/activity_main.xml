@@ -78,16 +78,4 @@
 
     </FrameLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_post_quote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:src="@drawable/ic_new_post"
-        app:fabSize="normal"
-        app:fabCustomSize="48dp"
-        app:maxImageSize="48dp"
-        app:layout_anchor="@id/bottom_navigation"
-        app:layout_anchorGravity="top|center_horizontal"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
