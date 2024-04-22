@@ -17,8 +17,9 @@
         android:layout_width="255dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="Welcome to MindLeaf, where every day blooms with positivity and peace."
+        android:text="Start your journey at MindLeaf, where every day is an opportunity to bloom with positivity and peace."
         android:textAlignment="center"
+        android:padding="16dp"
         android:textSize="24sp" />
 
     <Button
@@ -37,17 +38,5 @@
         android:text="Continue as Guest"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp" />
-<!--    <Button-->
-<!--        android:id="@+id/getStartedButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Get Started"-->
-<!--        android:textSize="18sp"-->
-<!--        android:background="?android:attr/selectableItemBackground"-->
-<!--        android:paddingLeft="48dp"-->
-<!--        android:paddingRight="48dp"-->
-<!--        android:paddingTop="12dp"-->
-<!--        android:paddingBottom="12dp"-->
-<!--        android:layout_marginBottom="16dp"/>-->
 
 </LinearLayout>
